@@ -1,4 +1,4 @@
-const userSchema = {
+const adminSchema = {
     id: { type: "number" },
     firstName: { type: "string" },
     lastName: { type: "string" },
@@ -7,25 +7,24 @@ const userSchema = {
     age: { type: "number" },
     password: { type: "string" },
     lastLogin: { type: "string" },
-    balance: { type: "number" },
     role: { type: "string" }
   }
 
-export const getUsersSchema = {
-  tags: ['user'],
-    response: {
-      200: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: userSchema
-      }
+export const getAdminsSchema = {
+  tags: ["admin"],
+  response: {
+    200: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: adminSchema
     }
   }
 }
+}
 
-export const getUserSchema = {
-  tags: ['user'],
+export const getAdminSchema = {
+  tags: ["admin"],
     params: {
       id: {
         type: "number"
@@ -35,21 +34,22 @@ export const getUserSchema = {
     response: {
       200: {
         type: "object",
-        properties: userSchema
+        properties: adminSchema
       }
       }
     }
 
 
-export const postUserSchema = {
-  tags: ['user'],
+export const postAdminSchema = {
+  tags: ["admin"],
     body: {
       type: 'object',
       required: ['firstName',
         'lastName',
         'email',
-        'phoneNumber',
-        'age'
+        'password',
+        'age',
+        'role'
       ],
       properties: {
         firstName: { type: "string" },
@@ -59,7 +59,7 @@ export const postUserSchema = {
         age: { type: "number" },
         password: { type: "string" },
         lastLogin: { type: "string" },
-        balance: { type: "number" }
+        role: { type: "string" }
       }
     },
     response: {
@@ -69,8 +69,8 @@ export const postUserSchema = {
     }
 }
 
-export const deleteUserSchema = {
-  tags: ['user'],
+export const deleteAdminSchema = {
+  tags: ["admin"],
   params: {
     id: {
       type: "number"
@@ -86,8 +86,8 @@ export const deleteUserSchema = {
     }
 }
 
-export const putUserSchema = {
-  tags: ['user'],
+export const putAdminSchema = {
+  tags: ["admin"],
   params: {
     id: {
       type: "number"
@@ -102,47 +102,20 @@ export const putUserSchema = {
       phoneNumber: { type: "string" },
       age: { type: "number" },
       password: { type: "string" },
-      lastLogin: { type: "string" },
-      balance: { type: "number" }
+      lastLogin: { type: "string" }
     },
     response: {
-      type: 'object',
-      properties: {
-        message: {type: 'string'}
+      200: {
+        type: 'object',
+        properties: {
+          message: {type: 'string'}
+        }
       }
     }
 }}
 
-export const purchaseProductsSchema = {
-  tags: ['user'],
-  params: {
-    user_id: { type: "number" }
-  },
-  body: {
-    type: "object",
-    properties: {
-      date: { type: "string" },
-      cashier_id: { type: "number" },
-      product_ids: {
-        type: "array",
-        items: { type: "number" }
-      }
-    }
-  },
-  response: {
-    200: {
-      type: "object",
-      properties: {
-        message:{
-          type: "string"
-        }
-      }
-    }
-  }
-}
-
-export const userAuth = {
-  tags: ['user'],
+export const adminAuth = {
+  tags: ['admin'],
   body: {
       type: "object",
       properties: {
@@ -167,6 +140,19 @@ export const userAuth = {
       type: "object",
       properties: {
         message: {
+          type: "string"
+        }
+      }
+    }
+  }
+}
+export const whoamischema = {
+  tags:["admins"],
+  reponse: {
+    200: {
+      type: "object",
+      properties: {
+        role: {
           type: "string"
         }
       }

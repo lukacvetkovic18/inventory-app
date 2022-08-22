@@ -1,16 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity, BeforeInsert, BeforeUpdate } from "typeorm"
 import * as bcrypt from "bcrypt"
-import { Purchase } from "../purchase/purchase.entity"
-
-const userRole = {
-    'user' : 0,
-    'cashier' : 1,
-    'admin' : 2,
-    'superadmin' : 3
-}
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity, BeforeInsert, BeforeUpdate } from "typeorm"
 
 @Entity()
-export class User extends BaseEntity{
+export class Admin extends BaseEntity{
 
     @PrimaryGeneratedColumn("increment")
     id: number
@@ -32,15 +24,9 @@ export class User extends BaseEntity{
 
     @Column({ type: "varchar" })
     password: string
-    
+
     @Column({ type: "char", length: 10 })
     lastLogin: string
-
-    @Column({ type: "decimal", precision: 5, scale: 2 })
-    balance: number
-
-    @OneToMany(() => Purchase, (purchase) => purchase.buyer)
-    purchases: Purchase[]
 
     @BeforeInsert()
     @BeforeUpdate()
@@ -53,6 +39,6 @@ export class User extends BaseEntity{
         return bcrypt.compare(this.password, password)
     }
 
-    @Column({ type: "varchar", default: "User" })
+    @Column({ type: "varchar", default: "Admin" })
     role: string
 }

@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm"
+import * as bcrypt from "bcrypt"
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity, BeforeInsert, BeforeUpdate } from "typeorm"
 import { Purchase } from "../purchase/purchase.entity"
 
 @Entity()
-export class Cashier {
+export class Cashier extends BaseEntity{
 
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn("increment")
     id: number
 
     @Column({ type: "varchar", length: 30 })
@@ -25,9 +26,23 @@ export class Cashier {
     @Column({ type: "varchar" })
     password: string
 
-    @Column({ type: "timestamptz" })
-    lastLogin: Date
+    @Column({ type: "char", length: 10 })
+    lastLogin: string
 
     @OneToMany(() => Purchase, (sale) => sale.cashier)
     sales: Purchase[]
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashPassword(){
+        if(this.password){
+            this.password = await bcrypt.hash(this.password, 10);
+        }
+    }
+    async comparePassword(password) : Promise<Boolean>{
+        return bcrypt.compare(this.password, password)
+    }
+
+    @Column({ type: "varchar", default: "Cashier" })
+    role: string
 }

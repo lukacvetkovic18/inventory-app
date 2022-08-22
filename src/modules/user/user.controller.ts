@@ -1,48 +1,69 @@
+import { getCustomRepository } from "typeorm";
 import { UserRepository } from "./user.repository";
 
-const { v4:uuidv4 } = require('uuid');
+export default async (server) =>{
+  const uR = getCustomRepository(UserRepository);
+  
+  const getUsers = async (req, reply) => {
+    try {
+      return await uR.getUsers();
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
 
-export const getUsers = async (req, reply) => {
-  const users = await UserRepository.find({
-    relations: ["purchases"]
-  })
-  reply.send(users)
-}
+  const getUser = async (req, reply) => {
+    try {
+      return reply.send(await uR.getUser(req.params.id));
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
 
-export const getUser = async (req, reply) => {
-  const user = await UserRepository.findOne(req.params.id)
-  reply.send(user)
-}
+  const addUser = async (req, reply) =>{
+    try{
+      return await uR.addUser(req.body);
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
 
-export const addUser = async (req, reply) => {
-  const { firstName, lastName, email, phoneNumber, age, balance} = req.body
-  const newUser = await UserRepository.create({
-    id: uuidv4(),
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    age,
-    lastLogin: Date(),
-    balance
-  })
-  const result = await UserRepository.save(newUser)
-  reply.send(result)
-}
+  const deleteUser = async (req, reply) => {
+    try {
+      return await uR.deleteUser(req.params.id);
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
 
-export const deleteUser = async (req, reply) => {
-  const user = await UserRepository.findOneBy({id : req.params.id})
-  await UserRepository.remove(user)
-  reply.send({message: "User has been removed."})
-}
+  const updateUser = async (req, reply) => {
+    try {
+      return await uR.updateUser(req.params.id, req.body);
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
 
-export const updateUser = async (req, reply) => {
-  const user = await UserRepository.findOneBy({id : req.params.id})
-  await UserRepository.update(user, req.body)
-  reply.send(req.body)
-}
+  const purchaseProduct = async (req, reply) => {
+    try {
+      return await uR.purchaseProducts(req.params.user_id, req.body.cashier_id, req.body.product_ids, req.body.date);
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
 
-export const purchaseProduct = async (req, reply) => {
-  const products = req.params.products
-  //const user = 
+  return {
+    getUsers,
+    getUser,
+    addUser,
+    deleteUser,
+    updateUser,
+    purchaseProduct
+  }
 }
