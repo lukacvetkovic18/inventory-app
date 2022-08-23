@@ -1,12 +1,7 @@
 import "fastify";
-import fastify from "fastify";
-import { EntityRepository, getCustomRepository, getRepository, IsNull, Repository } from "typeorm";
+import { EntityRepository, getCustomRepository, Repository } from "typeorm";
 import { Product } from "../product/product.entity";
 import { ProductRespository } from "../product/product.repository";
-import { Purchase } from "../purchase/purchase.entity";
-import { PurchaseRespository } from "../purchase/purchase.repository";
-import { UserRepository } from "../user/user.repository";
-import { WarehouseWorker } from "../warehouseWorker/warehouseWorker.entity";
 import { WarehouseWorkerRepository } from "../warehouseWorker/warehouseWorker.repository";
 import { Warehouse } from "./warehouse.entity";
 
@@ -39,8 +34,6 @@ export class WarehouseRepository extends Repository<Warehouse>{
   }
 
   public async addWorker(warehouse_id, worker_id) {
-    //const warehouse = await this.findOne({where: (qb) => { qb.where('workers.warehouseId = :warehouse_id', warehouse_id)},
-    //relations: ['workers']});
     const warehouse = await this.findOne(warehouse_id)
     const worker = await getCustomRepository(WarehouseWorkerRepository).findOne(worker_id);
     await getCustomRepository(WarehouseWorkerRepository)
@@ -48,15 +41,7 @@ export class WarehouseRepository extends Repository<Warehouse>{
         .relation(Warehouse, 'workers')
         .of(warehouse)
         .add(worker)
-    //let workers = warehouse.workers
-    //workers.push(warehouse.workers)
-    //workers.push(worker)
     await getCustomRepository(WarehouseRepository).update(warehouse, warehouse)
-    /*this.createQueryBuilder()
-        .update(Warehouse)
-        .set({workers : workers})
-        .where("id = :id", {id: worker_id})
-        .execute()*/
     return `Warehouse ${warehouse_id} employed new worker with id ${worker_id}`
   }
 
@@ -67,7 +52,6 @@ export class WarehouseRepository extends Repository<Warehouse>{
     console.log(warehouse);
     console.log(product);
     console.log(newAmount);
-    // let update = await getCustomRepository(ProductRespository).update(product, { warehouse: warehouse, warehouseState: newAmount })
     let update = await getCustomRepository(ProductRespository).createQueryBuilder()
         .update(Product)
         .set({warehouse: warehouse, warehouseState: newAmount})

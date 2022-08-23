@@ -1,9 +1,7 @@
 import "fastify";
 import { EntityRepository, getCustomRepository, getRepository, Repository } from "typeorm";
 import { CashierRepository } from "../cashier/cashier.repository";
-import { Product } from "../product/product.entity";
 import { ProductRespository } from "../product/product.repository";
-import { Purchase } from "../purchase/purchase.entity";
 import { PurchaseRespository } from "../purchase/purchase.repository";
 import { User } from "./user.entity";
 
@@ -35,7 +33,7 @@ export class UserRepository extends Repository<User>{
     return `Updated user with id ${id}`
   }
 
-  public async purchaseProducts(user_id, cashier_id, product_ids, date) {
+  public async purchaseProducts(user_id, cashier_id, product_ids) {
     const user = await this.findOne(user_id)
     const cashier = await getCustomRepository(CashierRepository).findOne(cashier_id)
     const products = await getCustomRepository(ProductRespository).findByIds(product_ids)
@@ -57,7 +55,6 @@ export class UserRepository extends Repository<User>{
     const newPurchase = await getCustomRepository(PurchaseRespository).create({
       cashier: cashier,
       buyer: user,
-      date: date,
       sum: sum,
       products: products
     })

@@ -13,7 +13,7 @@ export class Product extends BaseEntity {
     @Column({ type: "varchar", length: 100 })
     description: string
 
-    @Column({ type: "double" })
+    @Column({ type: "int" })
     price: number
 
     @Column({ type: "int" })

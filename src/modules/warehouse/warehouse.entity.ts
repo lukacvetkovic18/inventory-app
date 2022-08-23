@@ -1,4 +1,3 @@
-import { Worker } from "cluster"
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity, ManyToMany, JoinTable } from "typeorm"
 import { Product } from "../product/product.entity"
 import { WarehouseWorker } from "../warehouseWorker/warehouseWorker.entity"

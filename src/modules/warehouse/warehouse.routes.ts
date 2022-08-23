@@ -1,4 +1,3 @@
-import { Repository } from "typeorm";
 import {
   getWarehousesSchema,
   getWarehouseSchema,
@@ -8,7 +7,6 @@ import {
   addWorkerSchema,
   addProductSchema
 } from "./warehouse.schema";
-import { Warehouse } from "./warehouse.entity";
 import warehouseController from "./warehouse.controller";
 
 

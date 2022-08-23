@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Cashier } from "../cashier/cashier.entity";
 import { Product } from "../product/product.entity";
 import { User } from "../user/user.entity";
@@ -16,8 +16,8 @@ export class Purchase extends BaseEntity{
   @ManyToOne(() => User, buyer => buyer.purchases)
   buyer: User
   
-  @Column({ type: "char", length: 10 })
-  date: string
+  @Column({ type: "date" })
+  created: string
 
   @Column({ type: 'double' })
   sum: number
@@ -25,4 +25,10 @@ export class Purchase extends BaseEntity{
   @ManyToMany(() => Product)
   @JoinTable()
   products: Product[]
+
+  @BeforeInsert()
+    async setCurrentDate(){
+        const today = new Date();
+        this.created = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    }
 }

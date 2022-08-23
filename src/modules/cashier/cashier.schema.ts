@@ -6,7 +6,7 @@ const cashierSchema = {
     phoneNumber: { type: "string" },
     age: { type: "number" },
     password: { type: "string" },
-    lastLogin: { type: "string" },
+    created: { type: "string" },
     role: { type: "string"}
   }
 
@@ -57,7 +57,6 @@ export const postCashierSchema = {
         phoneNumber: { type: "string" },
         age: { type: "number" },
         password: { type: "string" },
-        lastLogin: { type: "string" }
       }
     },
     response: {
@@ -100,7 +99,6 @@ export const putCashierSchema = {
       phoneNumber: { type: "string" },
       age: { type: "number" },
       password: { type: "string" },
-      lastLogin: { type: "string" }
     },
     response: {
       200: {
@@ -135,12 +133,6 @@ export const checkDailyTrafficSchema = {
     id: { type: "number" },
     date: { type: 'string' }
   },
-  /*body: {
-    type: 'object',
-    properties: {
-      date: { type: 'string' }
-    }
-  },*/
   response: {
     200: {
       type: 'object',

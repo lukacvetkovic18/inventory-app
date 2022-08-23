@@ -6,7 +6,7 @@ const userSchema = {
     phoneNumber: { type: "string" },
     age: { type: "number" },
     password: { type: "string" },
-    lastLogin: { type: "string" },
+    created: { type: "string" },
     balance: { type: "number" },
     role: { type: "string" }
   }
@@ -58,7 +58,6 @@ export const postUserSchema = {
         phoneNumber: { type: "string" },
         age: { type: "number" },
         password: { type: "string" },
-        lastLogin: { type: "string" },
         balance: { type: "number" }
       }
     },
@@ -102,7 +101,6 @@ export const putUserSchema = {
       phoneNumber: { type: "string" },
       age: { type: "number" },
       password: { type: "string" },
-      lastLogin: { type: "string" },
       balance: { type: "number" }
     },
     response: {
@@ -121,7 +119,6 @@ export const purchaseProductsSchema = {
   body: {
     type: "object",
     properties: {
-      date: { type: "string" },
       cashier_id: { type: "number" },
       product_ids: {
         type: "array",

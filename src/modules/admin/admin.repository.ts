@@ -17,15 +17,8 @@ export class AdminRepository extends Repository<Admin>{
     if(admin.role !== "Admin" && admin.role !== "SuperAdmin"){
       return "Role doesn't exist"
     }
-    /*if(admin.role === "SuperAdmin"){
-      const admin1 = await this.find({ where: { role: "SuperAdmin" }})
-      if(admin1 !== null){
-        return "SuperAdmin already exists"
-      }
-    } else{*/
       await this.save(this.create(admin));
       return "Admin created"
-    //}
   }
 
   public async deleteAdmin(id) {

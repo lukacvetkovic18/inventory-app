@@ -1,5 +1,4 @@
 import { Repository } from "typeorm";
-import cashierController from "./warehouseWorker.controller";
 import {
   getWorkersSchema,
   getWorkerSchema,
@@ -11,12 +10,10 @@ import {
 } from "./warehouseWorker.schema";
 import { WarehouseWorker } from "./warehouseWorker.entity";
 import warehouseWorkerController from "./warehouseWorker.controller";
-import { Admin } from "../admin/admin.entity";
 
 
 export default async (fastify, opts) =>{
   const workerRepo: Repository<WarehouseWorker> = fastify.db.getRepository(WarehouseWorker);
-  const adminRepo: Repository<Admin> = fastify.db.getRepository(Admin);
   
   const workerCtl = warehouseWorkerController(fastify);
   
@@ -72,35 +69,19 @@ export default async (fastify, opts) =>{
     const worker = await workerRepo.findOne({where: {
       email: req.body.email
     }});
-    // const admin = await adminRepo.findOne({where: {
-    //   email: req.body.email 
-    // }});
-    if (worker) {
-      if (!req.body.password) {
-        return res.code(401).send({message: "Password wasn't sent"})
-      }
-      if (!worker.comparePassword(req.body.password)) {
-        return res.code(401).send({message: "Sent password doesn't match database password"})
-      }
-      else{
-         const token = await fastify.jwt.sign({email: worker.email, role: worker.role})
-         return res.send({token: token});
-       }
+    if (!worker) {
+      return res.code(401).send({message: "Warehouse worker not found"});
     }
-    // if (admin) {
-    //   if (!req.body.password) {
-    //     return res.code(401).send({message: "Password wasn't sent"})
-    //   }
-    //   if (!admin.comparePassword(req.body.password)) {
-    //     return res.code(401).send({message: "Sent password doesn't match database password"})
-    //   }
-    //   else{
-    //      const token = await fastify.jwt.sign({email: admin.email, role: admin.role})
-    //      return res.send({token: token});
-    //    }
-    // } else {
-    //   return res.code(401).send({message: "Warehouse worker not found"});
-    // }
+    if (!req.body.password) {
+      return res.code(401).send({message: "Password wasn't sent"})
+    }
+    if (!worker.comparePassword(req.body.password)) {
+      return res.code(401).send({message: "Sent password doesn't match database password"})
+    }
+    else {
+      const token = await fastify.jwt.sign({email: worker.email, role: worker.role})
+      return res.send({token: token});
+    }
    }
    )
 }

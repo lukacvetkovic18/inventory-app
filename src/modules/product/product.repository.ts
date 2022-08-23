@@ -1,5 +1,5 @@
 import "fastify";
-import { EntityRepository, getCustomRepository, getRepository, IsNull, Repository } from "typeorm";
+import { EntityRepository, Repository } from "typeorm";
 import { Product } from "./product.entity";
 
 @EntityRepository(Product)

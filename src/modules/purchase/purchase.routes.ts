@@ -1,6 +1,4 @@
-import { Repository } from "typeorm";
 import purchaseController from "./purchase.controller";
-import { Purchase } from "./purchase.entity";
 import { 
   getPurchasesSchema,
   getPurchaseSchema

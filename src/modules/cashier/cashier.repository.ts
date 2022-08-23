@@ -1,14 +1,9 @@
 import "fastify";
-import fastify from "fastify";
-import { EntityRepository, getCustomRepository, getRepository, IsNull, Repository } from "typeorm";
-import { Product } from "../product/product.entity";
+import { EntityRepository, getCustomRepository, Repository } from "typeorm";
 import { ProductRespository } from "../product/product.repository";
-import { Purchase } from "../purchase/purchase.entity";
 import { PurchaseRespository } from "../purchase/purchase.repository";
 import { UserRepository } from "../user/user.repository";
-import { WarehouseRepository } from "../warehouse/warehouse.repository";
 import { Cashier } from "./cashier.entity";
-const server = fastify()
 
 @EntityRepository(Cashier)
 export class CashierRepository extends Repository<Cashier>{
@@ -50,7 +45,7 @@ export class CashierRepository extends Repository<Cashier>{
 
   public async checkDailyTraffic(id, date) {
     const cashier = await this.findOne(id);
-    const purchases = await getCustomRepository(PurchaseRespository).find({where: {date: date}})
+    const purchases = await getCustomRepository(PurchaseRespository).find({where: {created: date}})
     let traffic = 0;
     purchases.forEach(purchase => {
       traffic += purchase.sum;
@@ -71,11 +66,10 @@ export class CashierRepository extends Repository<Cashier>{
     return `Cashier ${cashier_id} removed product with id ${product_id}`
   }
 
-  public async returnMoney(cashier_id, user_id, amount) {
+  public async returnMoney(cashier_id, user_id, amount:number) {
     const cashier = await this.findOne(cashier_id);
     const user = await getCustomRepository(UserRepository).findOne(user_id);
-    const newBalance = user.balance + amount;
-    await getCustomRepository(UserRepository).update(user, {balance: newBalance});
+    await getCustomRepository(UserRepository).update(user, {balance: user.balance + amount});
     return `Cashier ${cashier_id} gave user ${user_id} the amount of ${amount}`
   }
 
@@ -91,7 +85,7 @@ export class CashierRepository extends Repository<Cashier>{
 
   public async printData(date){
     const products = await getCustomRepository(ProductRespository).find()
-    const purchases = await getCustomRepository(PurchaseRespository).find({where: {date: date}})
+    const purchases = await getCustomRepository(PurchaseRespository).find({where: {created: date}})
     let ws = 0;
     let ss = 0;
     let result = ``

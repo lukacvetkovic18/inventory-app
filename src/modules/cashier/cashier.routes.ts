@@ -21,7 +21,6 @@ import { Admin } from "../admin/admin.entity";
 
 export default async (fastify, opts) =>{
   const cashierRepo: Repository<Cashier> = fastify.db.getRepository(Cashier);
-  const adminRepo: Repository<Admin> = fastify.db.getRepository(Admin);
   
   const cashierCtl = cashierController(fastify);
   
@@ -126,34 +125,18 @@ export default async (fastify, opts) =>{
     const cashier = await cashierRepo.findOne({where: {
       email: req.body.email
     }});
-    const admin = await adminRepo.findOne({where: {
-      email: req.body.email 
-    }});
-    if (cashier) {
-      if (!req.body.password) {
-        return res.code(401).send({message: "Password wasn't sent"})
-      }
-      if (!cashier.comparePassword(req.body.password)) {
-        return res.code(401).send({message: "Sent password doesn't match database password"})
-      }
-      else{
-         const token = await fastify.jwt.sign({email: cashier.email, role: cashier.role})
-         return res.send({token: token});
-       }
-    }
-    if (admin) {
-      if (!req.body.password) {
-        return res.code(401).send({message: "Password wasn't sent"})
-      }
-      if (!admin.comparePassword(req.body.password)) {
-        return res.code(401).send({message: "Sent password doesn't match database password"})
-      }
-      else{
-         const token = await fastify.jwt.sign({email: admin.email, role: admin.role})
-         return res.send({token: token});
-       }
-    } else {
+    if (!cashier) {
       return res.code(401).send({message: "Cashier not found"});
+    }
+    if (!req.body.password) {
+      return res.code(401).send({message: "Password wasn't sent"})
+    }
+    if (!cashier.comparePassword(req.body.password)) {
+      return res.code(401).send({message: "Sent password doesn't match database password"})
+    }
+    else {
+      const token = await fastify.jwt.sign({email: cashier.email, role: cashier.role})
+      return res.send({token: token});
     }
    }
    )

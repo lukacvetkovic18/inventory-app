@@ -2,13 +2,6 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, BaseEntity, BeforeIn
 import * as bcrypt from "bcrypt"
 import { Purchase } from "../purchase/purchase.entity"
 
-const userRole = {
-    'user' : 0,
-    'cashier' : 1,
-    'admin' : 2,
-    'superadmin' : 3
-}
-
 @Entity()
 export class User extends BaseEntity{
 
@@ -33,10 +26,10 @@ export class User extends BaseEntity{
     @Column({ type: "varchar" })
     password: string
     
-    @Column({ type: "char", length: 10 })
-    lastLogin: string
+    @Column({ type: "date" })
+    created: string
 
-    @Column({ type: "decimal", precision: 5, scale: 2 })
+    @Column({ type: "int" })
     balance: number
 
     @OneToMany(() => Purchase, (purchase) => purchase.buyer)
@@ -51,6 +44,12 @@ export class User extends BaseEntity{
     }
     async comparePassword(password) : Promise<Boolean>{
         return bcrypt.compare(this.password, password)
+    }
+
+    @BeforeInsert()
+    async setCurrentDate(){
+        const today = new Date();
+        this.created = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     }
 
     @Column({ type: "varchar", default: "User" })

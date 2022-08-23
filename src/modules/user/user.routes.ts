@@ -1,8 +1,6 @@
 
-import fastify from "fastify";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
-import { UserRepository } from "./user.repository";
 import userController from "./user.controller";
 import {
   getUsersSchema,
@@ -74,34 +72,18 @@ export default async (fastify, opts) =>{
     const user = await userRepo.findOne({where: {
       email: req.body.email
     }});
-    const admin = await adminRepo.findOne({where: {
-      email: req.body.email 
-    }});
-    if (user) {
-      if (!req.body.password) {
-        return res.code(401).send({message: "Password wasn't sent"})
-      }
-      if (!user.comparePassword(req.body.password)) {
-        return res.code(401).send({message: "Sent password doesn't match database password"})
-      }
-      else{
-         const token = await fastify.jwt.sign({email: user.email, role: user.role})
-         return res.send({token: token});
-       }
-    }
-    if (admin) {
-      if (!req.body.password) {
-        return res.code(401).send({message: "Password wasn't sent"})
-      }
-      if (!admin.comparePassword(req.body.password)) {
-        return res.code(401).send({message: "Sent password doesn't match database password"})
-      }
-      else{
-         const token = await fastify.jwt.sign({email: admin.email, role: admin.role})
-         return res.send({token: token});
-       }
-    } else {
+    if (!user) {
       return res.code(401).send({message: "User not found"});
+    }
+    if (!req.body.password) {
+      return res.code(401).send({message: "Password wasn't sent"})
+    }
+    if (!user.comparePassword(req.body.password)) {
+      return res.code(401).send({message: "Sent password doesn't match database password"})
+    }
+    else {
+      const token = await fastify.jwt.sign({email: user.email, role: user.role})
+      return res.send({token: token});
     }
    }
    )

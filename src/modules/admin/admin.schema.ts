@@ -6,7 +6,7 @@ const adminSchema = {
     phoneNumber: { type: "string" },
     age: { type: "number" },
     password: { type: "string" },
-    lastLogin: { type: "string" },
+    created: { type: "string" },
     role: { type: "string" }
   }
 
@@ -58,7 +58,6 @@ export const postAdminSchema = {
         phoneNumber: { type: "string" },
         age: { type: "number" },
         password: { type: "string" },
-        lastLogin: { type: "string" },
         role: { type: "string" }
       }
     },
@@ -102,7 +101,6 @@ export const putAdminSchema = {
       phoneNumber: { type: "string" },
       age: { type: "number" },
       password: { type: "string" },
-      lastLogin: { type: "string" }
     },
     response: {
       200: {

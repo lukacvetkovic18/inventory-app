@@ -51,7 +51,7 @@ export default async (server) =>{
 
   const purchaseProduct = async (req, reply) => {
     try {
-      return await uR.purchaseProducts(req.params.user_id, req.body.cashier_id, req.body.product_ids, req.body.date);
+      return await uR.purchaseProducts(req.params.user_id, req.body.cashier_id, req.body.product_ids);
     }
     catch(e){
       console.error(e);

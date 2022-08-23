@@ -26,8 +26,8 @@ export class WarehouseWorker extends BaseEntity{
     @Column({ type: "varchar" })
     password: string
 
-    @Column({ type: "char", length: 10 })
-    lastLogin: string
+    @Column({ type: "date" })
+    created: string
 
     @ManyToMany(() => Warehouse, (warehouse) => warehouse.workers)
     warehouses: Warehouse[]
@@ -41,6 +41,12 @@ export class WarehouseWorker extends BaseEntity{
     }
     async comparePassword(password) : Promise<Boolean>{
         return bcrypt.compare(this.password, password)
+    }
+
+    @BeforeInsert()
+    async setCurrentDate(){
+        const today = new Date();
+        this.created = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     }
 
     @Column({ type: "varchar", default: "WarehouseWorker" })

@@ -6,7 +6,7 @@ const workerSchema = {
     phoneNumber: { type: "string" },
     age: { type: "number" },
     password: { type: "string" },
-    lastLogin: { type: "string" },
+    created: { type: "string" },
     role: { type: "string" }
   }
 
@@ -57,7 +57,6 @@ export const postWorkerSchema = {
         email: { type: "string" },
         phoneNumber: { type: "string" },
         age: { type: "number" },
-        lastLogin: {type: "string"},
       }
     },
     response: {
@@ -100,7 +99,6 @@ export const putWorkerSchema = {
       phoneNumber: { type: "string" },
       age: { type: "number" },
       password: { type: "string" },
-      lastLogin: {type: "string"}
     },
     response: {
       200: {
@@ -140,115 +138,6 @@ export const transferProductsSchema = {
     }
   }
 }
-
-/*export const checkStockSchema = {
-  tags: ["cashier"],
-  params: {
-    id: {
-      type: "number"
-    }
-  },
-  response: {
-    200: {
-      type: 'object',
-      properties: {
-        message: {type: 'string'}
-      }
-    }
-  }
-}
-
-export const checkDailyTrafficSchema = {
-  tags: ["cashier"],
-  params: {
-    id: {
-      type: "number"
-    },
-    date: {
-      type: 'string'
-    }
-  },
-  response: {
-    200: {
-      type: 'object',
-      properties: {
-        message: {type: 'string'}
-      }
-    }
-  }
-}
-
-export const addProductSchema = {
-  tags: ["cashier"],
-  params: {
-    id: {
-      type: "number"
-    }
-  },
-  body: {
-    type: 'object',
-    properties: {
-      name: { type: "string" },
-      description: { type: "string" },
-      price: { type: "number" },
-      stockState: { type: "number" }
-    }
-  },
-  response: {
-    200: {
-      type: 'object',
-      properties: {
-        message: {type: 'string'}
-      }
-    }
-  }
-}
-
-export const removeProductSchema = {
-  tags: ["cashier"],
-  params: {
-    cashier_id: {
-      type: "number"
-    },
-    product_id: {
-      type: "number"
-    }
-  },
-  response: {
-    200: {
-      type: 'object',
-      properties: {
-        message: {type: 'string'}
-      }
-    }
-  }
-}
-
-export const returnMoneySchema = {
-  tags: ["cashier"],
-  params: {
-    cashier_id: {
-      type: "number"
-    },
-    user_id: {
-      type: "number"
-    }
-  },
-  body: {
-    type: 'object',
-    properties: {
-      balance: {type: "number"}
-    }
-  },
-  response: {
-    200: {
-      type: 'object',
-      properties: {
-        message: {type: 'string'}
-      }
-    }
-  }
-}*/
 
 export const workerAuth = {
   tags: ['warehouseWorker'],
