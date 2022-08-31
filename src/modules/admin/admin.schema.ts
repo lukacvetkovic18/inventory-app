@@ -35,6 +35,9 @@ export const getAdminSchema = {
       200: {
         type: "object",
         properties: adminSchema
+      },
+      201: {
+        type: "string"
       }
       }
     }
@@ -112,6 +115,130 @@ export const putAdminSchema = {
     }
 }}
 
+export const banUserSchema = {
+  tags: ["admin"],
+  body: {
+    type: 'object',
+    properties: {
+      adminId: { type: "number" },
+      userMail: { type: "string" },
+    }
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        sender : { type: "string" },
+        receiver : { type: "string" }
+      }
+    }
+  }
+}
+
+export const adminGenMfa = {
+  tags: ['admin'],
+  body: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string"
+        }
+    }
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        token:{
+          type: "string"
+        }
+      }
+    },
+    401: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    },
+  }
+}
+
+export const adminCompMfa = {
+  tags: ['admin'],
+  body: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string"
+        },
+        mfaToken: {
+          type: "string"
+        }
+    }
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        isValid:{
+          type: "boolean"
+        }
+      }
+    },
+    401: {
+      type: "object",
+      properties: {
+        isValid: {
+          type: "boolean"
+        }
+      }
+    },
+  }
+}
+
+export const adminMfaAuth = {
+  tags: ['admin'],
+  body: {
+    type: "object",
+    properties: {
+      email: {
+        type: "string"
+      },
+      mfaToken: {
+        type: "string"
+      }
+  }
+},
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        token:{
+          type: "string"
+      }
+    }
+    },
+    401: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    },
+    403: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    }
+  }
+}
+
 export const adminAuth = {
   tags: ['admin'],
   body: {
@@ -141,11 +268,19 @@ export const adminAuth = {
           type: "string"
         }
       }
+    },
+    403: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
     }
   }
 }
 export const whoamischema = {
-  tags:["admins"],
+  tags:["admin"],
   reponse: {
     200: {
       type: "object",
@@ -157,3 +292,24 @@ export const whoamischema = {
     }
   }
 }
+export const changePasswordSchema = {
+  tags: ["admin"],
+  params: {
+    id: {
+      type: "number"
+    }
+  },
+  body: {
+    type: 'object',
+    properties: {
+      new_pass: { type: "string" }
+    },
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          message: {type: 'string'}
+        }
+      }
+    }
+}}

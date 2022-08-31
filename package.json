@@ -18,6 +18,7 @@
   "author": "Luka Cvetkovic",
   "license": "ISC",
   "dependencies": {
+    "@fastify/rate-limit": "^7.3.0",
     "@types/md5": "^2.3.1",
     "authenticator": "^1.1.5",
     "axios": "^0.22.0",
@@ -33,7 +34,7 @@
     "fastify-jwt": "^3.1.0",
     "fastify-oas": "^3.0.8",
     "fastify-plugin": "^3.0.0",
-    "fastify-rate-limit": "^5.6.2",
+    "fastify-rate-limit": "^5.9.0",
     "fastify-sensible": "^3.1.1",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
@@ -41,12 +42,14 @@
     "mysql": "^2.18.1",
     "node-geocoder": "^4.2.0",
     "node-vault": "^0.9.22",
+    "nodemailer": "^6.7.8",
     "pino-pretty": "^7.0.1",
-    "qrcode": "^1.4.4",
+    "qrcode": "^1.5.1",
     "shelljs": "^0.8.4",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1",
     "typeorm": "^0.2.37",
+    "typeorm-pagination": "^2.0.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

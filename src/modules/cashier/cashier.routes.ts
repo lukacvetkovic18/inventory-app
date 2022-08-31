@@ -14,9 +14,14 @@ import {
   returnMoneySchema,
   cashierAuth,
   checkTrafficSchema,
-  printDataSchema
+  printDataSchema,
+  changePasswordSchema,
+  cashierGenMfa,
+  cashierCompMfa,
+  cashierMfaAuth
 } from "./cashier.schema";
-import { Admin } from "../admin/admin.entity";
+import { generateKey, generateToken, generateTotpUri, verifyToken } from "authenticator";
+import { toDataURL } from "qrcode";
 
 
 export default async (fastify, opts) =>{
@@ -121,6 +126,73 @@ export default async (fastify, opts) =>{
     preValidation: [fastify.cashierACL]
   })
 
+  fastify.post("/cashiers/generateMfa", { schema: cashierGenMfa },async (req, res) => {
+    const cashier = await cashierRepo.findOne({where: {
+      email: req.body.email
+    }});
+    if(!cashier) {
+      return res.code(401).send( "Cashier not found" )
+    }
+    let formattedKey = generateKey();
+    console.log(formattedKey)
+    let formattedToken = generateToken(formattedKey);
+    verifyToken(formattedKey, formattedToken);
+
+    let key = formattedKey.replace(/\W/g, '').toLowerCase();
+    let link = "otpauth://totp/{{NAME}}?secret={{KEY}}";
+    const uri = generateTotpUri(formattedKey, req.body.email, "Google", "SHA1", 6, 30);
+
+    await cashierRepo
+    .createQueryBuilder()
+    .update(Cashier)
+    .set({ mfaToken: formattedKey })
+    .where("email = :email", { email: req.body.email })
+    .execute()
+    console.log(await toDataURL(link.replace(/{{NAME}}/g, req.body.email).replace(/{{KEY}}/g, key)))
+    return res.code(200).send( "Generated mfa token" )
+  })
+
+  fastify.post("/cashiers/compareMfa",{ schema: cashierCompMfa }, async (req, res) => {
+    const cashier = await cashierRepo.findOne({where: {
+      email: req.body.email
+    }});
+    if(!cashier) {
+      return res.code(401).send({ message: "Cashier not found" })
+    }
+    const key = cashier.mfaToken;
+    const enteredKey = req.body.mfaToken;
+
+    const token = verifyToken(key, enteredKey)
+    console.log(token)
+    if(token != null) {
+      return res.code(200).send({ isValid: true });
+    }
+    return res.code(404).send({ isValid: false })
+  })
+
+  fastify.post("/cashiers/authMfa", { schema: cashierMfaAuth, }, async ( req, res, ) => {
+    const cashier = await cashierRepo.findOne({where: {
+      email: req.body.email
+    }});
+    if (!cashier) {
+      return res.code(401).send({message: "Cashier not found"});
+    }
+    if(cashier.banned) {
+      return res.code(403).send({message: "Cashier with requested email is banned"})
+    }
+    if (!req.body.mfaToken) {
+      return res.code(401).send({message: "Token wasn't sent"})
+    }
+    if ((verifyToken(cashier.mfaToken, req.body.mfaToken))===null) {
+      return res.code(401).send({message: "Sent token doesn't match database token"})
+    }
+    else {
+      const token = await fastify.jwt.sign({email: cashier.email, role: cashier.role})
+      return res.send({token: token});
+    }
+   }
+   )
+
   fastify.post("/cashiers/auth", { schema: cashierAuth, }, async ( req, res, ) => {
     const cashier = await cashierRepo.findOne({where: {
       email: req.body.email
@@ -128,10 +200,13 @@ export default async (fastify, opts) =>{
     if (!cashier) {
       return res.code(401).send({message: "Cashier not found"});
     }
+    if(cashier.banned) {
+      return res.code(403).send({message: "Cashier with requested email is banned"})
+    }
     if (!req.body.password) {
       return res.code(401).send({message: "Password wasn't sent"})
     }
-    if (!cashier.comparePassword(req.body.password)) {
+    if (!await cashier.comparePassword(req.body.password)) {
       return res.code(401).send({message: "Sent password doesn't match database password"})
     }
     else {
@@ -140,4 +215,12 @@ export default async (fastify, opts) =>{
     }
    }
    )
+
+   fastify.route({
+    method: "PUT",
+    url: "/cashiers/changePass/:id",
+    handler: (await cashierCtl).changePassword,
+    schema: changePasswordSchema,
+    preValidation: [fastify.cashierACL]
+  })
 }

@@ -15,7 +15,11 @@ export default async (server) =>{
 
   const getWorker = async (req, reply) => {
     try {
-      return reply.send(await wwR.getWorker(req.params.id));
+      const worker = await wwR.getWorker(req.params.id);
+      if(worker.banned){
+        return reply.code(201).send("Warehouse worker has been banned")
+      }
+      return reply.code(200).send(worker);
     }
     catch(e){
       console.error(e);
@@ -51,7 +55,16 @@ export default async (server) =>{
 
   const transferProducts = async (req, reply) => {
     try {
-      return await wwR.transferProducts(req.params.worker_id, req.body.warehouse_id, req.body.product_ids)
+      return await wwR.transferProducts(req.params.worker_id, req.body.amounts)
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
+
+  const changePassword = async (req, reply) => {
+    try {
+      return await wwR.changePassword(req.params.id, req.body.new_pass)
     }
     catch(e){
       console.error(e);
@@ -64,6 +77,7 @@ export default async (server) =>{
     addWorker,
     deleteWorker,
     updateWorker,
-    transferProducts
+    transferProducts,
+    changePassword
   }
 }

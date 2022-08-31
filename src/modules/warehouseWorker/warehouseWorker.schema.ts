@@ -35,6 +35,9 @@ export const getWorkerSchema = {
       200: {
         type: "object",
         properties: workerSchema
+      },
+      201: {
+        type: "string"
       }
       }
     }
@@ -120,10 +123,7 @@ export const transferProductsSchema = {
   body: {
     type: 'object',
     properties: {
-      warehouse_id: {
-        type: "number"
-      },
-      product_ids: {
+      amounts: {
         type: "array",
         items: { type: "number" }
       }
@@ -134,6 +134,110 @@ export const transferProductsSchema = {
       type: 'object',
       properties: {
         message: {type: 'string'}
+      }
+    }
+  }
+}
+
+export const workerGenMfa = {
+  tags: ['warehouseWorker'],
+  body: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string"
+        }
+    }
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        token:{
+          type: "string"
+        }
+      }
+    },
+    401: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    },
+  }
+}
+
+export const workerCompMfa = {
+  tags: ['warehouseWorker'],
+  body: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string"
+        },
+        mfaToken: {
+          type: "string"
+        }
+    }
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        isValid:{
+          type: "boolean"
+        }
+      }
+    },
+    401: {
+      type: "object",
+      properties: {
+        isValid: {
+          type: "boolean"
+        }
+      }
+    },
+  }
+}
+
+export const workerMfaAuth = {
+  tags: ['warehouseWorker'],
+  body: {
+    type: "object",
+    properties: {
+      email: {
+        type: "string"
+      },
+      mfaToken: {
+        type: "string"
+      }
+  }
+},
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        token:{
+          type: "string"
+      }
+    }
+    },
+    401: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    },
+    403: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
       }
     }
   }
@@ -166,6 +270,37 @@ export const workerAuth = {
       properties: {
         message: {
           type: "string"
+        }
+      }
+    },
+    403: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    }
+  }
+}
+
+export const changePasswordSchema = {
+  tags: ["warehouseWorker"],
+  params: {
+    id: {
+      type: "number"
+    }
+  },
+  body: {
+    type: 'object',
+    properties: {
+      new_pass: { type: "string" }
+    },
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          message: {type: 'string'}
         }
       }
     }

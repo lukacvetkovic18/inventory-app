@@ -15,7 +15,11 @@ export default async (server) =>{
 
   const getAdmin = async (req, reply) => {
     try {
-      return reply.send(await aR.getAdmin(req.params.id));
+      const admin = await aR.getAdmin(req.params.id);
+      if(admin.banned){
+        return reply.code(201).send("Admin has been banned")
+      }
+      return reply.code(200).send(admin)
     }
     catch(e){
       console.error(e);
@@ -50,7 +54,27 @@ export default async (server) =>{
   }
   const test = async (req, reply) =>{
     try {
-      console.log("I am a test function")
+      let data: any = [];
+      await server.sendMail(data);
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
+
+  const banUser = async (req, reply) => {
+    try {
+      const data = await aR.banUser(req.body.adminId, req.body.userMail);
+      return await server.sendMail(data);
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
+
+  const changePassword = async (req, reply) => {
+    try {
+      return await aR.changePassword(req.params.id, req.body.new_pass)
     }
     catch(e){
       console.error(e);
@@ -63,6 +87,8 @@ export default async (server) =>{
     addAdmin,
     deleteAdmin,
     updateAdmin,
-    test
+    test,
+    banUser,
+    changePassword
   }
 }

@@ -14,7 +14,7 @@ export class WarehouseWorker extends BaseEntity{
     @Column({ type: "varchar", length: 30 })
     lastName: string
 
-    @Column({ type: "varchar" })
+    @Column({ type: "varchar", unique: true })
     email: string
 
     @Column({ type: "varchar", length: 12 })
@@ -51,4 +51,10 @@ export class WarehouseWorker extends BaseEntity{
 
     @Column({ type: "varchar", default: "WarehouseWorker" })
     role: string
+    
+    @Column({ type: "varchar", default: null })
+    mfaToken: string
+
+    @Column({ type: "boolean", default: false })
+    banned: boolean
 }

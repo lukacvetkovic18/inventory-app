@@ -14,7 +14,7 @@ export class User extends BaseEntity{
     @Column({ type: "varchar", length: 30 })
     lastName: string
 
-    @Column({ type: "varchar" })
+    @Column({ type: "varchar", unique: true })
     email: string
 
     @Column({ type: "varchar", length: 12 })
@@ -42,8 +42,8 @@ export class User extends BaseEntity{
             this.password = await bcrypt.hash(this.password, 10);
         }
     }
-    async comparePassword(password) : Promise<Boolean>{
-        return bcrypt.compare(this.password, password)
+    async comparePassword(password : String) : Promise<Boolean>{
+        return bcrypt.compare(password, this.password)
     }
 
     @BeforeInsert()
@@ -54,4 +54,10 @@ export class User extends BaseEntity{
 
     @Column({ type: "varchar", default: "User" })
     role: string
+    
+    @Column({ type: "varchar", default: null })
+    mfaToken: string
+
+    @Column({ type: "boolean", default: false })
+    banned: boolean
 }

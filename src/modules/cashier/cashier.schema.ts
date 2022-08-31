@@ -35,6 +35,9 @@ export const getCashierSchema = {
       200: {
         type: "object",
         properties: cashierSchema
+      },
+      201: {
+        type: "string"
       }
       }
     }
@@ -247,6 +250,110 @@ export const printDataSchema = {
   }
 }
 
+export const cashierGenMfa = {
+  tags: ['cashier'],
+  body: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string"
+        }
+    }
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        token:{
+          type: "string"
+        }
+      }
+    },
+    401: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    },
+  }
+}
+
+export const cashierCompMfa = {
+  tags: ['cashier'],
+  body: {
+      type: "object",
+      properties: {
+        email: {
+          type: "string"
+        },
+        mfaToken: {
+          type: "string"
+        }
+    }
+  },
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        isValid:{
+          type: "boolean"
+        }
+      }
+    },
+    401: {
+      type: "object",
+      properties: {
+        isValid: {
+          type: "boolean"
+        }
+      }
+    },
+  }
+}
+
+export const cashierMfaAuth = {
+  tags: ['cashier'],
+  body: {
+    type: "object",
+    properties: {
+      email: {
+        type: "string"
+      },
+      mfaToken: {
+        type: "string"
+      }
+  }
+},
+  response: {
+    200: {
+      type: "object",
+      properties: {
+        token:{
+          type: "string"
+      }
+    }
+    },
+    401: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    },
+    403: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
+    }
+  }
+}
+
 export const cashierAuth = {
   tags: ['cashier'],
   body: {
@@ -276,6 +383,36 @@ export const cashierAuth = {
           type: "string"
         }
       }
+    },
+    403: {
+      type: "object",
+      properties: {
+        message: {
+          type: "string"
+        }
+      }
     }
   }
 }
+
+export const changePasswordSchema = {
+  tags: ["cashier"],
+  params: {
+    id: {
+      type: "number"
+    }
+  },
+  body: {
+    type: 'object',
+    properties: {
+      new_pass: { type: "string" }
+    },
+    response: {
+      200: {
+        type: 'object',
+        properties: {
+          message: {type: 'string'}
+        }
+      }
+    }
+}}

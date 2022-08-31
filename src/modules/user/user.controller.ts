@@ -1,4 +1,5 @@
 import { getCustomRepository } from "typeorm";
+import { checkDailyTrafficSchema } from "../cashier/cashier.schema";
 import { UserRepository } from "./user.repository";
 
 export default async (server) =>{
@@ -15,7 +16,11 @@ export default async (server) =>{
 
   const getUser = async (req, reply) => {
     try {
-      return reply.send(await uR.getUser(req.params.id));
+      const user = await uR.getUser(req.params.id);
+      if(user.banned){
+        return reply.code(201).send("User has been banned")
+      }
+      return reply.code(200).send(user)
     }
     catch(e){
       console.error(e);
@@ -51,7 +56,25 @@ export default async (server) =>{
 
   const purchaseProduct = async (req, reply) => {
     try {
-      return await uR.purchaseProducts(req.params.user_id, req.body.cashier_id, req.body.product_ids);
+      return await uR.purchaseProducts(req.params.user_id, req.body.cashier_id, req.body.amounts, req.body.discount, req.body.granted);
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
+
+  const getAllPurchasesFromUser = async (req, reply) => {
+    try {
+      return await uR.getAllPurchasesFromUser(req.params.id);
+    }
+    catch(e) {
+      console.error(e);
+    }
+  }
+
+  const changePassword = async (req, reply) => {
+    try {
+      return await uR.changePassword(req.params.id, req.body.new_pass)
     }
     catch(e){
       console.error(e);
@@ -64,6 +87,8 @@ export default async (server) =>{
     addUser,
     deleteUser,
     updateUser,
-    purchaseProduct
+    purchaseProduct,
+    getAllPurchasesFromUser,
+    changePassword
   }
 }

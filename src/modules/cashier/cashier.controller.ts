@@ -15,7 +15,11 @@ export default async (server) =>{
 
   const getCashier = async (req, reply) => {
     try {
-      return reply.send(await cR.getCashier(req.params.id));
+      const cashier = await cR.getCashier(req.params.id);
+      if(cashier.banned){
+        return reply.code(201).send("Cashier has been banned")
+      }
+      return reply.code(200).send(cashier)
     }
     catch(e){
       console.error(e);
@@ -112,6 +116,15 @@ export default async (server) =>{
     }
   }
 
+  const changePassword = async (req, reply) => {
+    try {
+      return await cR.changePassword(req.params.id, req.body.new_pass)
+    }
+    catch(e){
+      console.error(e);
+    }
+  }
+
   return {
     getCashiers,
     getCashier,
@@ -124,6 +137,7 @@ export default async (server) =>{
     removeProduct,
     returnMoney,
     checkTraffic,
-    printData
+    printData,
+    changePassword
   }
 }
